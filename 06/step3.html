@@ -6,7 +6,7 @@
   <link rel="stylesheet" href="../bootstrap.min.css">
   <style>
     body{
-      padding-top:80px;
+      padding-top:80px
     }
     #search-btn{
       margin-top: 20px;
@@ -44,120 +44,68 @@ var url = 'http://api.map.baidu.com/geocoder/v2/?output=json&ak=' + token + '&ad
 var $input = $('#place-input')
 var $search = $('#search-btn')
 
-$search.click(function(){
+$search.click(function() {
   var place = $input.val()
   if (place) {
-    $.getJSON(url+place+'&callback=?',function(res){
-      if (res.status===0) {
+    $.getJSON(url + place + '&callback=?', function(res) {
+      if (res.status === 0) {
         drawMap(place, res.result.location)
-      };
-
+      }else{
+        alert('百度没有找到地址信息')
+      }
     })
-  };
-
+  }
 })
 
 
-function drawMap(name,loc){
-  var myChart = echarts.init(document.getElementById('main'));
-  
+function drawMap(name, loc) {
+  var myChart = echarts.init(document.getElementById('main'))
 
-// var convertData = function (data) {
-//     var res = [];
-//     for (var i = 0; i < data.length; i++) {
-//         var geoCoord = geoCoordMap[data[i].name];
-//         if (geoCoord) {
-//             res.push({
-//                 name: data[i].name,
-//                 value: geoCoord.concat(data[i].value)
-//             });
-//         }
-//     }
-//     return res;
-// };
-
-var option = {
+  var option = {
     backgroundColor: '#404a59',
     title: {
-        text: '地址搜索',
-        left: 'center',
-        textStyle: {
-            color: '#fff'
-        }
+      text: '地址搜索',
+      left: 'center',
+      textStyle: {
+        color: '#fff'
+      }
     },
-    tooltip : {
-        trigger: 'item'
+    tooltip: {
+      trigger: 'item'
     },
     geo: {
-        map: 'china',
-        label: {
-            emphasis: {
-                show: false
-            }
+      map: 'china',
+      label: {
+        emphasis: {
+          show: false
+        }
+      },
+      roam: true,
+      itemStyle: {
+        normal: {
+          areaColor: '#323c48',
+          borderColor: '#111'
         },
-        roam: true,
-        itemStyle: {
-            normal: {
-                areaColor: '#323c48',
-                borderColor: '#111'
-            },
-            emphasis: {
-                areaColor: '#2a333d'
-            }
+        emphasis: {
+          areaColor: '#2a333d'
         }
+      }
     },
-    series : [
-        {
-            name: '地址',
-            type: 'scatter',
-            coordinateSystem: 'geo',
-            data: [{
-              name: name,
-              value:[loc.lng,loc.lat]
-            }],
-            symbolSize: function(val) {
-                return 10;
-            },
-            label: {
-                normal: {
-                    formatter: '{b}',
-                    position: 'right',
-                    show: false
-                },
-                emphasis: {
-                    show: true
-                }
-            },
-            itemStyle: {
-                normal: {
-                    color: '#ddb926'
-                }
-            }
-        }
-    ]
-};
-
-
-
-  myChart.setOption(option);
-
+    series: [{
+      name: '地址',
+      type: 'scatter',
+      coordinateSystem: 'geo',
+      data: [{
+        name: name,
+        value: [loc.lng, loc.lat]
+      }],
+      symbolSize: function(val) {
+        return 10;
+      },
+    }]
+  }
+  myChart.setOption(option)
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 </script>
 </body>
