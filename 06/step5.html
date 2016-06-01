@@ -40,13 +40,20 @@ var token = 'clR7lmWlaguV9WUYKM7OGMbj'
 var url = 'http://api.map.baidu.com/geocoder/v2/?output=json&ak=' + token + '&address='
 var ePlaceInput = $('#place-input')
 var eSearchBtn = $('#search-btn')
-
+var myChart = echarts.init(document.getElementById('main'))
+var chartData = []
 eSearchBtn.click(function() {
   var place = ePlaceInput.val()
   if (place) {
     $.getJSON(url + place + '&callback=?', function(res) {
+      var loc
       if (res.status === 0) {
-        console.log(place, res.result)
+        loc = res.result.location
+        chartData.push({
+          name: name,
+          value: [loc.lng, loc.lat]
+        })
+        drawMap(place)
       }else{
         alert('百度没有找到地址信息')
       }
@@ -54,7 +61,58 @@ eSearchBtn.click(function() {
   }
 })
 
+function drawMap(name, loc) {
 
+  var option = {
+    backgroundColor: '#404a59',
+    title: {
+      text: '2016要去的地方',
+      left: 'center',
+      textStyle: {
+        color: '#fff'
+      }
+    },
+    tooltip: {
+      trigger: 'item'
+    },
+    toolbox: {
+        show: true,
+        feature: {
+            saveAsImage: {
+                show: true
+            }
+        }
+    },
+    geo: {
+      map: 'china',
+      label: {
+        emphasis: {
+          show: false
+        }
+      },
+      roam: true,
+      itemStyle: {
+        normal: {
+          areaColor: '#323c48',
+          borderColor: '#111'
+        },
+        emphasis: {
+          areaColor: '#2a333d'
+        }
+      }
+    },
+    series: [{
+      name: '地址',
+      type: 'scatter',
+      coordinateSystem: 'geo',
+      data: chartData,
+      symbolSize: function(val) {
+        return 10;
+      },
+    }]
+  }
+  myChart.setOption(option)
+}
 
 </script>
 </body>
